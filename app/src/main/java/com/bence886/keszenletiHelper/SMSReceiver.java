@@ -13,18 +13,19 @@ public class SMSReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Get the SMS message.
         Bundle bundle = intent.getExtras();
         SmsMessage[] msgs;
         String strMessage = "";
-        String format = bundle.getString("format");
-        // Retrieve the SMS message received.
-        Object[] pdus = (Object[]) bundle.get("pdus");
+        String format = null;
+        if (bundle != null) {
+            format = bundle.getString("format");
+        }
+        Object[] pdus = new Object[0];
+        if (bundle != null) {
+            pdus = (Object[]) bundle.get("pdus");
+        }
         if (pdus != null) {
-            // Check the Android version.
-            boolean isVersionM =
-                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M);
-            // Fill the msgs array.
+            boolean isVersionM = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M);
             msgs = new SmsMessage[pdus.length];
             for (int i = 0; i < msgs.length; i++) {
                 // Check Android version and use appropriate createFromPdu.
@@ -41,16 +42,27 @@ public class SMSReceiver extends BroadcastReceiver {
                     Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("appinventor.ai_ipolymentok.KESZENLET");
                     if (launchIntent != null) {
                         PowerManager pm = (PowerManager) context.getApplicationContext().getSystemService(Context.POWER_SERVICE);
-                        PowerManager.WakeLock wakeLock = pm.newWakeLock((
-                                PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
-                                        PowerManager.FULL_WAKE_LOCK |
-                                        PowerManager.ACQUIRE_CAUSES_WAKEUP
-                        ), "myapp:waketag");
-                        wakeLock.acquire();
+                        PowerManager.WakeLock wakeLock = null;
+                        if (pm != null) {
+                            wakeLock = pm.newWakeLock((
+                                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                                            PowerManager.FULL_WAKE_LOCK |
+                                            PowerManager.ACQUIRE_CAUSES_WAKEUP
+                            ), "myapp:waketag");
+                        }
+                        if (wakeLock != null) {
+                            wakeLock.acquire(10*60*1000L /*10 minutes*/);
+                        }
+                        launchIntent.putExtra("SMS_DATA", msgs[i].getOriginatingAddress() + "|" + msgs[i].getMessageBody());
                         context.startActivity(launchIntent);//null pointer check in case package name was not found
-                        KeyguardManager keyguardManager = (KeyguardManager) context.getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
-                        KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("myapp:waketag");
-                        keyguardLock.disableKeyguard();
+                            KeyguardManager keyguardManager = (KeyguardManager) context.getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+                        KeyguardManager.KeyguardLock keyguardLock = null;
+                        if (keyguardManager != null) {
+                            keyguardLock = keyguardManager.newKeyguardLock("myapp:waketag");
+                        }
+                        if (keyguardLock != null) {
+                            keyguardLock.disableKeyguard();
+                        }
                     }
                 }
             }
