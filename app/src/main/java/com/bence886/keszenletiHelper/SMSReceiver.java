@@ -53,7 +53,7 @@ public class SMSReceiver extends BroadcastReceiver {
                         if (wakeLock != null) {
                             wakeLock.acquire(10*60*1000L /*10 minutes*/);
                         }
-                        launchIntent.putExtra("SMS_DATA", msgs[i].getOriginatingAddress() + "|" + msgs[i].getMessageBody());
+                        launchIntent.putExtra("APP_INVENTOR_START", msgs[i].getOriginatingAddress() + "|" + msgs[i].getMessageBody());
                         context.startActivity(launchIntent);//null pointer check in case package name was not found
                             KeyguardManager keyguardManager = (KeyguardManager) context.getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
                         KeyguardManager.KeyguardLock keyguardLock = null;
