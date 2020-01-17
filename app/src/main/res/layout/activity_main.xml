@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/fire_iocn_2_foreground" />
+        app:srcCompat="@mipmap/fire_foreground" />
 
     <TextView
         android:id="@+id/kesz"
@@ -79,7 +79,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:fontFamily="arial"
-        android:text="Version: 1.0.0"
+        android:text="Version: 1.0.1"
         android:textAlignment="textEnd"
         android:textColor="#FFFFFFFF"
         android:textSize="10dp"
