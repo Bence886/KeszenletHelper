@@ -6,8 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.telephony.SmsMessage;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class SMSReceiver extends BroadcastReceiver {
 
@@ -39,34 +49,69 @@ public class SMSReceiver extends BroadcastReceiver {
 
                 if (msgs[i].getMessageBody().contains("<keszenletapp>"))
                 {
-                    Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("appinventor.ai_ipolymentok.KESZENLET");
-                    if (launchIntent != null) {
-                        PowerManager pm = (PowerManager) context.getApplicationContext().getSystemService(Context.POWER_SERVICE);
-                        PowerManager.WakeLock wakeLock = null;
-                        if (pm != null) {
-                            wakeLock = pm.newWakeLock((
-                                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
-                                            PowerManager.FULL_WAKE_LOCK |
-                                            PowerManager.ACQUIRE_CAUSES_WAKEUP
-                            ), "myapp:waketag");
+                    OpenIpolymentokApp(context, msgs[i].getOriginatingAddress(), msgs[i].getMessageBody());
+                }
+                else
+                {
+                    File f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/pajzs.keszenletapp");
+                    StringBuilder text = new StringBuilder();
+                    try {
+                        BufferedReader br = new BufferedReader(new FileReader(f));
+                        String line;
+                        while ((line = br.readLine()) != null)
+                        {
+                            text.append(line);
                         }
-                        if (wakeLock != null) {
-                            wakeLock.acquire(10*60*1000L /*10 minutes*/);
-                        }
-                        launchIntent.putExtra("APP_INVENTOR_START", msgs[i].getOriginatingAddress() + "|" + msgs[i].getMessageBody());
-                        context.startActivity(launchIntent);//null pointer check in case package name was not found
-                            KeyguardManager keyguardManager = (KeyguardManager) context.getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
-                        KeyguardManager.KeyguardLock keyguardLock = null;
-                        if (keyguardManager != null) {
-                            keyguardLock = keyguardManager.newKeyguardLock("myapp:waketag");
-                        }
-                        if (keyguardLock != null) {
-                            keyguardLock.disableKeyguard();
+                        br.close();
+                    } catch (FileNotFoundException e) {
+                    } catch (IOException e) {
+                    }
+
+                    String result = text.toString();
+                    String messageBody = msgs[i].getMessageBody();
+                    messageBody.concat("<pajzsriasztas>");
+
+                    List<String> numbers = Arrays.asList(result.split(";"));
+                    String sender = msgs[i].getOriginatingAddress();
+                    sender = sender.replace("+","");
+                    for (int j = 0; j < numbers.size(); j++)
+                    {
+                        if (sender.equals(numbers.get(j))){
+                            OpenIpolymentokApp(context, msgs[i].getOriginatingAddress(), messageBody);
+                            break;
                         }
                     }
                 }
             }
+            }
+        }
 
+        private void OpenIpolymentokApp(Context context,String originatingAddress, String text)
+        {
+            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("appinventor.ai_ipolymentok.KESZENLET");
+            if (launchIntent != null) {
+                PowerManager pm = (PowerManager) context.getApplicationContext().getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock wakeLock = null;
+                if (pm != null) {
+                    wakeLock = pm.newWakeLock((
+                            PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                                    PowerManager.FULL_WAKE_LOCK |
+                                    PowerManager.ACQUIRE_CAUSES_WAKEUP
+                    ), "myapp:waketag");
+                }
+                if (wakeLock != null) {
+                    wakeLock.acquire(10*60*1000L /*10 minutes*/);
+                }
+                launchIntent.putExtra("APP_INVENTOR_START", originatingAddress + "|" + text);
+                context.startActivity(launchIntent);//null pointer check in case package name was not found
+                KeyguardManager keyguardManager = (KeyguardManager) context.getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+                KeyguardManager.KeyguardLock keyguardLock = null;
+                if (keyguardManager != null) {
+                    keyguardLock = keyguardManager.newKeyguardLock("myapp:waketag");
+                }
+                if (keyguardLock != null) {
+                    keyguardLock.disableKeyguard();
+                }
             }
         }
 }
