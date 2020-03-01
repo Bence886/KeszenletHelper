@@ -69,7 +69,7 @@ public class SMSReceiver extends BroadcastReceiver {
 
                     String result = text.toString();
                     String messageBody = msgs[i].getMessageBody();
-                    messageBody.concat("<pajzsriasztas>");
+                    messageBody = messageBody.concat("<pajzsriasztas>");
 
                     List<String> numbers = Arrays.asList(result.split(";"));
                     String sender = msgs[i].getOriginatingAddress();
