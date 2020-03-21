@@ -8,16 +8,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
-import android.provider.MediaStore;
 import android.telephony.SmsMessage;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 public class SMSReceiver extends BroadcastReceiver {
 
@@ -63,8 +63,8 @@ public class SMSReceiver extends BroadcastReceiver {
                             text.append(line);
                         }
                         br.close();
-                    } catch (FileNotFoundException e) {
                     } catch (IOException e) {
+                        FirebaseCrashlytics.getInstance().recordException(e);
                     }
 
                     String result = text.toString();
@@ -73,13 +73,17 @@ public class SMSReceiver extends BroadcastReceiver {
 
                     List<String> numbers = Arrays.asList(result.split(";"));
                     String sender = msgs[i].getOriginatingAddress();
-                    sender = sender.replace("+","");
-                    for (int j = 0; j < numbers.size(); j++)
-                    {
-                        if (sender.equals(numbers.get(j))){
-                            OpenIpolymentokApp(context, msgs[i].getOriginatingAddress(), messageBody);
-                            break;
+                    if (sender != null){
+                        sender = sender.replace("+","");
+                        for (int j = 0; j < numbers.size(); j++)
+                        {
+                            if (sender.equals(numbers.get(j))){
+                                OpenIpolymentokApp(context, msgs[i].getOriginatingAddress(), messageBody);
+                                break;
+                            }
                         }
+                    }else{
+                        FirebaseCrashlytics.getInstance().log("Missing sms sender phone number");
                     }
                 }
             }
@@ -112,6 +116,8 @@ public class SMSReceiver extends BroadcastReceiver {
                 if (keyguardLock != null) {
                     keyguardLock.disableKeyguard();
                 }
+            }else{
+                FirebaseCrashlytics.getInstance().log("Can't find appinventor.ai_ipolymentok.KESZENLET app.");
             }
         }
 }
