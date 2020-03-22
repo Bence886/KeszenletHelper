@@ -12,8 +12,13 @@ import android.telephony.SmsMessage;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,7 +54,10 @@ public class SMSReceiver extends BroadcastReceiver {
 
                 if (msgs[i].getMessageBody().contains("<keszenletapp>"))
                 {
-                    OpenIpolymentokApp(context, msgs[i].getOriginatingAddress(), msgs[i].getMessageBody());
+                    String messageBody = msgs[i].getMessageBody();
+                    messageBody = messageBody.concat("<pajzsriasztas>");
+                    WriteSMSTOFile(context, msgs[i].getOriginatingAddress(), messageBody);
+                    OpenIpolymentokApp(context, msgs[i].getOriginatingAddress(), messageBody);
                 }
                 else
                 {
@@ -78,6 +86,7 @@ public class SMSReceiver extends BroadcastReceiver {
                         for (int j = 0; j < numbers.size(); j++)
                         {
                             if (sender.equals(numbers.get(j))){
+                                WriteSMSTOFile(context, msgs[i].getOriginatingAddress(), messageBody);
                                 OpenIpolymentokApp(context, msgs[i].getOriginatingAddress(), messageBody);
                                 break;
                             }
@@ -87,6 +96,46 @@ public class SMSReceiver extends BroadcastReceiver {
                     }
                 }
             }
+            }
+        }
+
+        private void WriteSMSTOFile(Context context, String originatingAddress, String text)
+        {
+            String deviceId = "NULL";
+            try (FileInputStream fis = context.openFileInput("userData")) {
+                InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                StringBuilder stringBuilder = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                    deviceId = reader.readLine();
+                } catch (IOException e) {
+                    FirebaseCrashlytics.getInstance().recordException(e);
+                }
+            } catch (IOException e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
+            }
+
+            String out = deviceId + "|" + originatingAddress + "|" + text;
+
+            String state = Environment.getExternalStorageState();
+            if (!Environment.MEDIA_MOUNTED.equals(state)) {
+
+                //If it isn't mounted - we can't write into it.
+                return;
+            }
+
+            try {
+                File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/keszenletapp.pajzs");
+                if (file.createNewFile()) {
+                    FileWriter fw = new FileWriter(file);
+                    fw.write(out);
+                    fw.flush();
+                    fw.close();
+                }else{
+                    FirebaseCrashlytics.getInstance().log("Cant create file!");
+                }
+            }
+            catch (IOException e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
             }
         }
 
