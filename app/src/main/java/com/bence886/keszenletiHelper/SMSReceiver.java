@@ -124,7 +124,7 @@ public class SMSReceiver extends BroadcastReceiver {
             }
 
             try {
-                File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/keszenletapp.pajzs");
+                File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/sms.keszenletapp");
                 if (file.createNewFile()) {
                     FileWriter fw = new FileWriter(file);
                     fw.write(out);
