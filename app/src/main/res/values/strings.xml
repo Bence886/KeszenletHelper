@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">SMS riasztás figyelő szolgáltatás</string>
+    <string name="k_szenl_t_app_sms_riaszt_sfigyel_szolg_ltat_sa">Készenlét app SMS Riasztásfigyelő szolgáltatása</string>
+    <string name="k_sz_tette_t_th_bence">Készítette: Tóth Bence</string>
+    <string name="k_szenl_t">KÉSZENLÉT</string>
 </resources>

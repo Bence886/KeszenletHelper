@@ -7,19 +7,20 @@
     android:background="#000000"
     tools:context=".MainActivity">
 
+
     <ImageView
-        android:id="@+id/fire"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="350dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/fire_foreground" />
+    android:id="@+id/fire"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginStart="50dp"
+    android:layout_marginTop="50dp"
+    android:layout_marginEnd="50dp"
+    android:layout_marginBottom="350dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@mipmap/fire_foreground" />
 
     <TextView
         android:id="@+id/kesz"
@@ -29,10 +30,10 @@
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         android:fontFamily="arial"
-        android:text="KÉSZENLÉT"
+        android:text="@string/k_szenl_t"
         android:textAlignment="center"
         android:textColor="#FFFFFFFF"
-        android:textSize="50dp"
+        android:textSize="50sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,10 +47,10 @@
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         android:fontFamily="arial"
-        android:text="Készenlét app SMS riasztás figyelő szolgáltatása"
+        android:text="@string/k_szenl_t_app_sms_riaszt_sfigyel_szolg_ltat_sa"
         android:textAlignment="center"
         android:textColor="#FFFFFFFF"
-        android:textSize="14dp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.545"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,13 +62,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:fontFamily="arial"
-        android:text="Készítette: Tóth Bence"
+        android:text="@string/k_sz_tette_t_th_bence"
         android:textAlignment="viewStart"
         android:textColor="#FFFFFFFF"
-        android:textSize="10dp"
+        android:textSize="10sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="SmallSp" />
 
     <TextView
         android:id="@+id/ver"
@@ -83,5 +85,7 @@
         android:textSize="10dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true"
+        tools:ignore="RtlCompat" />
 </androidx.constraintlayout.widget.ConstraintLayout>
