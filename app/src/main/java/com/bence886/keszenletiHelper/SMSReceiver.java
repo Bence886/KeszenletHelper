@@ -11,8 +11,6 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.telephony.SmsMessage;
 
-import androidx.annotation.NonNull;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,11 +23,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 public class SMSReceiver extends BroadcastReceiver {
 
@@ -142,39 +137,32 @@ public class SMSReceiver extends BroadcastReceiver {
     }
 
     private void OpenIpolymentokApp(final Context context, final String originatingAddress, final String text) {
-        FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("appinventor.ai_ipolymentok.KESZENLET");
-                if (launchIntent != null) {
-                    PowerManager pm = (PowerManager) context.getApplicationContext().getSystemService(Context.POWER_SERVICE);
-                    PowerManager.WakeLock wakeLock = null;
-                    if (pm != null) {
-                        wakeLock = pm.newWakeLock((
-                                PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
-                                        PowerManager.FULL_WAKE_LOCK |
-                                        PowerManager.ACQUIRE_CAUSES_WAKEUP
-                        ), "myapp:waketag");
-                    }
-                    if (wakeLock != null) {
-                        wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
-                    }
-                    launchIntent.putExtra("APP_INVENTOR_START", originatingAddress + "|" + text);
-                    context.startActivity(launchIntent);//null pointer check in case package name was not found
-                    KeyguardManager keyguardManager = (KeyguardManager) context.getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
-                    KeyguardManager.KeyguardLock keyguardLock = null;
-                    if (keyguardManager != null) {
-                        keyguardLock = keyguardManager.newKeyguardLock("myapp:waketag");
-                    }
-                    if (keyguardLock != null) {
-                        keyguardLock.disableKeyguard();
-                    }
-                } else {
-                    FirebaseCrashlytics.getInstance().log("Can't find appinventor.ai_ipolymentok.KESZENLET app.");
-                }
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("appinventor.ai_ipolymentok.KESZENLET");
+        if (launchIntent != null) {
+            PowerManager pm = (PowerManager) context.getApplicationContext().getSystemService(Context.POWER_SERVICE);
+            PowerManager.WakeLock wakeLock = null;
+            if (pm != null) {
+                wakeLock = pm.newWakeLock((
+                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                                PowerManager.FULL_WAKE_LOCK |
+                                PowerManager.ACQUIRE_CAUSES_WAKEUP
+                ), "myapp:waketag");
             }
-        }, firebaseRemoteConfig.getLong("keszanletapp_open_delay"));
+            if (wakeLock != null) {
+                wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
+            }
+            launchIntent.putExtra("APP_INVENTOR_START", originatingAddress + "|" + text);
+            context.startActivity(launchIntent);//null pointer check in case package name was not found
+            KeyguardManager keyguardManager = (KeyguardManager) context.getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+            KeyguardManager.KeyguardLock keyguardLock = null;
+            if (keyguardManager != null) {
+                keyguardLock = keyguardManager.newKeyguardLock("myapp:waketag");
+            }
+            if (keyguardLock != null) {
+                keyguardLock.disableKeyguard();
+            }
+        } else {
+            FirebaseCrashlytics.getInstance().log("Can't find appinventor.ai_ipolymentok.KESZENLET app.");
+        }
     }
 }

@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         mFirebaseAnalytics.setUserId(deviceId);
 
-        fetchRemoteDelay();
+        // fetchRemoteDelay();
     }
 
     public void onUidClicked(View v) {
