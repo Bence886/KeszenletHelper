@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.telephony.SmsMessage;
 
@@ -18,13 +17,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-
-
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 public class SMSReceiver extends BroadcastReceiver {
 
@@ -74,7 +69,6 @@ public class SMSReceiver extends BroadcastReceiver {
                     }
                     br.close();
                 } catch (IOException e) {
-                    FirebaseCrashlytics.getInstance().recordException(e);
                 }
 
                 String result = text.toString();
@@ -92,7 +86,6 @@ public class SMSReceiver extends BroadcastReceiver {
                         }
                     }
                 } else {
-                    FirebaseCrashlytics.getInstance().log("Missing sms sender phone number");
                 }
             }
         }
@@ -106,10 +99,8 @@ public class SMSReceiver extends BroadcastReceiver {
             try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
                 deviceId = reader.readLine();
             } catch (IOException e) {
-                FirebaseCrashlytics.getInstance().recordException(e);
             }
         } catch (IOException e) {
-            FirebaseCrashlytics.getInstance().recordException(e);
         }
 
         String out = deviceId + "|" + originatingAddress + "|" + text;
@@ -129,10 +120,8 @@ public class SMSReceiver extends BroadcastReceiver {
                 fw.flush();
                 fw.close();
             } else {
-                FirebaseCrashlytics.getInstance().log("Cant create file!");
             }
         } catch (IOException e) {
-            FirebaseCrashlytics.getInstance().recordException(e);
         }
     }
 
@@ -162,7 +151,6 @@ public class SMSReceiver extends BroadcastReceiver {
                 keyguardLock.disableKeyguard();
             }
         } else {
-            FirebaseCrashlytics.getInstance().log("Can't find appinventor.ai_ipolymentok.KESZENLET app.");
         }
     }
 }
