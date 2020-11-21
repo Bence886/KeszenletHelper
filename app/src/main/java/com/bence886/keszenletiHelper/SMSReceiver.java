@@ -125,7 +125,7 @@ public class SMSReceiver extends BroadcastReceiver {
         }
     }
 
-    private void OpenIpolymentokApp(final Context context, final String originatingAddress, final String text) {
+    public static void OpenIpolymentokApp(final Context context, final String originatingAddress, final String text) {
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("appinventor.ai_ipolymentok.KESZENLET");
         if (launchIntent != null) {
             PowerManager pm = (PowerManager) context.getApplicationContext().getSystemService(Context.POWER_SERVICE);

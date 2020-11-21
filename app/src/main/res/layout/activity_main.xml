@@ -88,4 +88,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:focusable="true"
         tools:ignore="RtlCompat" />
+
+    <Button
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/teszt_riaszt_s"
+        app:layout_constraintBottom_toTopOf="@+id/me"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

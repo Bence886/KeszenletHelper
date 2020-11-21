@@ -11,14 +11,14 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,11 +27,36 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private String deviceId;
+    private boolean testInProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        testInProgress = false;
+
+        final Button button = findViewById(R.id.test);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+               if (testInProgress)
+               {
+                   Toast toast = Toast.makeText(getApplicationContext(), "Próbariasztás már folyamatban.", 10);
+                   toast.show();
+               }else{
+                   testInProgress = true;
+                   Handler handler = new Handler();
+                   handler.postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           testInProgress = false;
+                           SMSReceiver.OpenIpolymentokApp(getApplicationContext(), "", "<riasztasfigyeloteszt>");
+                       }
+                   }, 10000);
+                   Toast toast = Toast.makeText(getApplicationContext(), "Próbariasztás 10 másodperc múlva.", 10);
+                   toast.show();
+               }
+            }
+        });
     }
 
     @Override
